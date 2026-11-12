@@ -1,0 +1,11 @@
+{
+  "model": "bot-latest",
+  "system": "You are a helpful assistant.",
+  "options": {
+    "temperature": 0,
+    "seed": 42,
+    "top_p": 0.9,
+    "num_predict": 200
+  },
+  "format": null
+}
