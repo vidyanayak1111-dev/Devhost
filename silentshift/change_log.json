@@ -1,0 +1,23 @@
+[
+  {
+    "time": "2026-11-13 11:14:01",
+    "trial": null,
+    "change": "swap_distilled",
+    "layer": "model",
+    "description": "alias moved to distilled model deepseek-r1:1.5b"
+  },
+  {
+    "time": "2026-11-13 11:15:45",
+    "trial": null,
+    "change": "swap_other_family",
+    "layer": "model",
+    "description": "alias moved to a different family llama3.2:3b"
+  },
+  {
+    "time": "2026-11-13 15:43:01",
+    "trial": null,
+    "change": "swap_smaller",
+    "layer": "model",
+    "description": "alias moved to smaller model qwen2.5:1.5b"
+  }
+]

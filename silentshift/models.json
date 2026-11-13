@@ -1,0 +1,19 @@
+{
+  "_note": "Pick a family with $env:SILENTSHIFT_FAMILY = 'large' or 'light'. 'large' needs about 16 GB RAM.",
+  "large": {
+    "normal":       "qwen2.5:7b",
+    "smaller":      "qwen2.5:3b",
+    "distilled":    "deepseek-r1:7b",
+    "quant_high":   "qwen2.5:7b-instruct-q8_0",
+    "quant_low":    "qwen2.5:7b-instruct-q2_K",
+    "other_family": "llama3.1:8b"
+  },
+  "light": {
+    "normal":       "qwen2.5:3b",
+    "smaller":      "qwen2.5:1.5b",
+    "distilled":    "deepseek-r1:1.5b",
+    "quant_high":   "qwen2.5:3b-instruct-q8_0",
+    "quant_low":    "qwen2.5:3b-instruct-q2_K",
+    "other_family": "llama3.2:3b"
+  }
+}

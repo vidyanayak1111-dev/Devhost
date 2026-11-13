@@ -1,0 +1,6 @@
+{
+  "alias_target": "qwen2.5:1.5b",
+  "num_ctx": null,
+  "safety": false,
+  "cpu_only": false
+}
