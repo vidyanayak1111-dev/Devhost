@@ -134,20 +134,23 @@ button {
   margin-top: 38px;
 }
 
+
 .section-label {
-  color: var(--muted);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.3px;
-  padding: 0 10px;
-  margin-bottom: 15px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0;
+    padding: 0 10px;
+    margin-bottom: 15px;
+    text-transform: capitalize;
 }
+
 
 .history-item {
   display: flex;
   align-items: center;
-  padding: 12px 10px;
-  margin-bottom: 3px;
+  padding: 7px 10px;
+  margin-bottom: 8px;
   border-radius: 9px;
   font-size: 12px;
   color: var(--muted);
@@ -746,4 +749,44 @@ button {
     .history-menu-btn {
         opacity: 1;
     }
+}
+/* COLLAPSIBLE CHAT HISTORY */
+
+.group-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+}
+
+.group-arrow {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.group-arrow.rotated {
+    transform: rotate(-90deg);
+}
+
+.history-group-content {
+    display: block;
+}
+
+.history-group-content.collapsed {
+    display: none;
+}
+/* FORCE TITLE CASE FOR CHAT GROUP HEADINGS */
+
+.group-toggle span:first-child {
+    text-transform: capitalize !important;
+    font-variant: normal;
 }

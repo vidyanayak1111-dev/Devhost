@@ -4,7 +4,7 @@
 // ==========================================
 
 // DOM ELEMENTS
-const API_URL ="https://saving-enhanced-formed-emerald.trycloudflare.com/api/chat";
+const API_URL ="https://str-cluster-scenic-temperatures.trycloudflare.com/api/chat";
 const API_MODEL = "bot-latest";
 const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
@@ -89,12 +89,51 @@ function renderHistory() {
   chatHistory.innerHTML = "";
 
   // Pinned chats appear first
-  const sortedChats = [...conversations].sort(
-    (a, b) => Number(b.pinned || false) - Number(a.pinned || false)
-  );
+const sortedChats = [...conversations].sort(
+  (a, b) => Number(b.pinned || false) - Number(a.pinned || false)
+);
 
-  sortedChats.forEach(chat => {
-    if (!chat.messages.length) return;
+
+let lastGroup = null;
+let currentGroupContainer = null;
+
+sortedChats.forEach(chat => {
+  if (!chat.messages.length) return;
+
+  const currentGroup = chat.pinned ? "Pinned" : "Recent Chats";
+
+  if (currentGroup !== lastGroup) {
+
+    const groupWrapper = document.createElement("div");
+    groupWrapper.className = "history-group";
+
+    const heading = document.createElement("button");
+    heading.className = "section-label group-toggle";
+    heading.type = "button";
+
+    const label = document.createElement("span");
+    label.textContent = currentGroup;
+
+    const arrow = document.createElement("span");
+    arrow.className = "group-arrow";
+    arrow.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
+
+    heading.append(label, arrow);
+
+    const groupContent = document.createElement("div");
+    groupContent.className = "history-group-content";
+
+    heading.addEventListener("click", () => {
+        const isCollapsed = groupContent.classList.toggle("collapsed");
+        arrow.classList.toggle("rotated", isCollapsed);
+    });
+
+    groupWrapper.append(heading, groupContent);
+    chatHistory.appendChild(groupWrapper);
+
+    currentGroupContainer = groupContent;
+    lastGroup = currentGroup;
+}
 
     const item = document.createElement("div");
     item.className = "history-item";
@@ -106,7 +145,9 @@ function renderHistory() {
     // Chat title
     const title = document.createElement("span");
     title.className = "history-title";
-    title.textContent = chat.title;
+    title.textContent = chat.title
+    .toLowerCase()
+    .replace(/\b\w/g, char => char.toUpperCase());
 
     // Three-dot menu
     const menuWrapper = document.createElement("div");
@@ -243,7 +284,7 @@ function renderHistory() {
     });
 
     item.append(title, menuWrapper);
-    chatHistory.appendChild(item);
+    currentGroupContainer.appendChild(item);
   });
 }
 
@@ -448,6 +489,30 @@ function sendMessage() {
   renderMessages();
   renderHistory();
   saveChats();
+  
+  // ==========================================
+  // LOCAL GREETING SYSTEM
+  // ==========================================
+
+  const greetingPattern =
+    /^(hi|hello|hey|good morning|good afternoon|good evening|howdy)(\s+there)?[!.?]*$/i;
+
+  if (greetingPattern.test(text) && attachments.length === 0) {
+
+    const greetingReply =
+      "Hello! 👋 Welcome to Silent Shift. I'm here and ready to help. What would you like to explore today?";
+
+    currentChat.messages.push({
+      role: "assistant",
+      text: greetingReply
+    });
+
+    renderMessages();
+    renderHistory();
+    saveChats();
+
+    return;
+  }
 
   
   // ==========================================
