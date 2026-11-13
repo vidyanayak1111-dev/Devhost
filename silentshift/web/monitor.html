@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SilentShift · Console</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="console.css?v=5">
+</head>
+<body>
+<div class="shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="side">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="11" fill="var(--accent)"/>
+        <path d="M7 22h6l3-9 5 16 4-11 2 4h6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div><b>SilentShift</b><small>model-change monitor</small></div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <a data-tab="overview"><i class="fa-solid fa-gauge-high"></i> Overview</a>
+      <a data-tab="identity"><i class="fa-solid fa-fingerprint"></i> Who's behind it? <span class="new">USP</span></a>
+      <a data-tab="reports"><i class="fa-solid fa-file-shield"></i> Reports <span class="badge" id="navAlerts" hidden>!</span></a>
+      <a data-tab="chat"><i class="fa-solid fa-comments"></i> Live chatbot</a>
+      <a data-tab="lab"><i class="fa-solid fa-user-secret"></i> Provider lab</a>
+      <a data-tab="evaluation"><i class="fa-solid fa-flask-vial"></i> Evaluation</a>
+      <a data-tab="privacy"><i class="fa-solid fa-user-shield"></i> Privacy</a>
+      <a data-tab="how"><i class="fa-solid fa-diagram-project"></i> How it works</a>
+    </nav>
+
+    <div class="side-foot">
+      <div class="watched">
+        <span class="muted">Watching</span>
+        <code>bot-latest</code>
+        <span class="chip" id="modeChip">…</span>
+      </div>
+      <button class="btn ghost small" id="themeBtn"><i class="fa-solid fa-circle-half-stroke"></i> Theme</button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <header class="top">
+      <div>
+        <h1 id="pageTitle">Overview</h1>
+        <p class="muted" id="pageSub">Is the AI behind the name still the one you tested?</p>
+      </div>
+      <div class="top-right">
+        <div class="progress" id="progress" hidden>
+          <div class="bar"><div id="progressBar"></div></div>
+          <span id="progressText"></span>
+        </div>
+        <span class="status-pill" id="statusPill"><span class="dot"></span><span id="statusText">…</span></span>
+        <button class="btn primary" id="btnCheckTop"><i class="fa-solid fa-magnifying-glass"></i> Run check</button>
+      </div>
+    </header>
+
+    <div class="active-banner" id="activeBanner" hidden>
+      <i class="fa-solid fa-user-secret"></i>
+      <div><b>Operator view - silent change active: <span id="activeName"></span></b><span id="activeEffect"></span></div>
+      <button class="btn small" id="bannerReset">Reset all</button>
+    </div>
+
+    <!-- ===================================================== OVERVIEW -->
+    <section class="tab-page" id="tab-overview">
+      <div class="card hero" id="hero">
+        <div class="hero-left">
+          <div class="hero-state"><span class="big-dot"></span><span id="heroTitle">Loading…</span></div>
+          <p class="hero-sub" id="heroSub"></p>
+          <div class="hero-meta" id="heroMeta"></div>
+        </div>
+        <div class="hero-right">
+          <div class="btn-row">
+            <button class="btn" id="btnBaseline"><i class="fa-solid fa-ruler"></i> Learn baseline</button>
+            <button class="btn primary" id="btnCheck"><i class="fa-solid fa-magnifying-glass"></i> Run check</button>
+            <button class="btn" id="btnDeep" title="Skip the cheap sentinel stage"><i class="fa-solid fa-microscope"></i> Deep check</button>
+          </div>
+          <label class="watch"><input type="checkbox" id="watchToggle"> Auto-check every <input type="number" id="watchMin" min="1" value="2"> min</label>
+          <label class="watch"><input type="checkbox" id="liveToggle"> Check when live chats suddenly look different</label>
+          <label class="watch"><input type="checkbox" id="afterToggle"> Check right after a provider-lab change</label>
+        </div>
+      </div>
+
+      <div class="kpis" id="kpis"></div>
+
+      <div class="grid-ov">
+        <div class="card who" id="whoCard">
+          <div class="card-head"><h2><i class="fa-solid fa-fingerprint"></i> Who's behind <code>bot-latest</code> right now?</h2>
+            <a class="link" data-go="identity">Details →</a></div>
+          <div id="whoBody"><p class="empty">Build the fingerprint library (tab <b>Who's behind it?</b>) to see which model is really answering.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-chart-line"></i> Drift timeline</h2>
+            <span class="muted small">bars = checks (height = drift score) · <span class="lg-ev"></span> = a real change (operator view)</span></div>
+          <div id="timeline" class="timeline"><p class="empty">No checks yet.</p></div>
+          <div id="ttd" class="muted small"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2><i class="fa-solid fa-file-shield"></i> Latest report <span class="muted" id="ovReportTime"></span></h2>
+          <a class="link" data-go="reports">Full report →</a></div>
+        <div id="ovReport"><p class="empty">No report yet. Learn a baseline, then run a check.</p></div>
+      </div>
+    </section>
+
+    <!-- ===================================================== IDENTITY -->
+    <section class="tab-page" id="tab-identity" hidden>
+      <div class="card usp">
+        <div class="usp-text">
+          <h2><i class="fa-solid fa-fingerprint"></i> Not just "something changed" - <em>who</em> is answering now</h2>
+          <p>Drift tools tell you behaviour moved. Research auditors answer "is it still model X - yes/no". SilentShift
+            also <b>names the replacement</b>: it keeps a <b>fingerprint library</b> of every model you can reach yourself
+            and matches each check against it - tokenizer (<span id="wTok">30</span>%), answers at temperature 0
+            (<span id="wAns">55</span>%) and behaviour habits (<span id="wBeh">15</span>%). A match with another
+            <i>build</i> of the same model points at <b>serving</b> (quantisation), not the model.</p>
+        </div>
+        <div class="usp-big" id="uspBig"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-ranking-star"></i> Latest match</h2><span class="muted small" id="matchTime"></span></div>
+          <div id="matchList"><p class="empty">No match yet - build the library, then run a check.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-book"></i> Fingerprint library</h2>
+            <button class="btn primary small" id="btnBuildFp"><i class="fa-solid fa-fingerprint"></i> Fingerprint selected</button></div>
+          <p class="muted small">Each fingerprint = the 15 canaries asked once, straight to that model (same settings bot-latest gets).
+            Synthetic questions only - no user data. Re-build after you download a model.</p>
+          <div id="fpCands"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2><i class="fa-solid fa-table-cells"></i> Can the library tell models apart?</h2>
+          <span class="muted small">similarity between fingerprints - low off the diagonal = easy to tell apart</span></div>
+        <div id="fpMatrix" class="table-wrap"><p class="empty">Needs at least two fingerprints.</p></div>
+      </div>
+    </section>
+
+    <!-- ===================================================== REPORTS -->
+    <section class="tab-page" id="tab-reports" hidden>
+      <div class="card">
+        <div class="card-head">
+          <h2><i class="fa-solid fa-file-lines"></i> Report <span class="muted" id="reportTime"></span></h2>
+          <div class="btn-row"><span class="muted small" id="reportCost"></span>
+            <a class="btn small" id="exportBtn" hidden><i class="fa-solid fa-download"></i> Export .md</a></div>
+        </div>
+        <div id="impact"></div>
+        <div id="reportWho"></div>
+        <div class="report" id="report"><p class="empty">No report yet.</p></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2><i class="fa-solid fa-clock-rotate-left"></i> Check history</h2><span class="muted small">click a row to open it</span></div>
+        <div class="table-wrap"><table id="history"></table></div>
+      </div>
+    </section>
+
+    <!-- ===================================================== CHAT -->
+    <section class="tab-page" id="tab-chat" hidden>
+      <div class="chat-note muted small"><i class="fa-solid fa-circle-info"></i>
+        This is the production app your users talk to. It asks for <code>bot-latest</code> through SilentShift's gateway -
+        only metadata (token counts, speed, settings hash) is recorded, never the text. Try <code>/status</code>.
+        <a href="/" target="_blank">Open in a new tab ↗</a></div>
+      <iframe id="chatFrame" class="chat-frame" title="Chatbot" loading="lazy"></iframe>
+    </section>
+
+    <!-- ===================================================== PROVIDER LAB -->
+    <section class="tab-page" id="tab-lab" hidden>
+      <div class="lab-intro card slim">
+        <i class="fa-solid fa-user-secret"></i>
+        <div><b>You are the AI provider here.</b> Every button really changes what answers behind <code>bot-latest</code>
+          - for the chatbot and the canaries alike. The monitor is <b>not told</b>: it must work it out from the outside.
+          Ground truth is kept in a hidden log that only the scorer and this operator view read.</div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-sliders"></i> One-click silent changes</h2>
+            <button class="btn small" id="btnReset"><i class="fa-solid fa-rotate-left"></i> Reset all</button></div>
+          <div class="active-change">Active change: <b id="activeChange">none</b></div>
+          <div id="changes"></div>
+        </div>
+
+        <div class="card" id="consoleCard">
+          <div class="card-head"><h2><i class="fa-solid fa-terminal"></i> Server console <span class="muted small">real Ollama server</span></h2></div>
+          <div id="consoleOff" class="muted small" hidden>The server console needs <b>real mode</b> with Ollama
+            (start.bat → option 2). Then <code>bot-latest</code> is a real model on the Ollama server and you can redefine it here.</div>
+          <div id="consoleOn">
+            <p class="muted small">Redefine <code>bot-latest</code> on the Ollama server - exactly like <code>ollama create bot-latest -f Modelfile</code>.</p>
+            <div class="form">
+              <label>FROM (base model)<select id="cBase"></select></label>
+              <label>SYSTEM (provider instructions) <textarea id="cSystem" rows="3" placeholder="empty = normal instructions"></textarea></label>
+              <div class="form-row">
+                <label>num_ctx<input id="cCtx" type="number" placeholder="4096"></label>
+                <label>num_thread<input id="cThread" type="number" placeholder="auto"></label>
+                <label>num_gpu<input id="cGpu" type="number" placeholder="auto"></label>
+                <label>temperature<input id="cTemp" type="number" step="0.1" placeholder="-"></label>
+              </div>
+              <div class="btn-row"><button class="btn primary" id="btnConsole"><i class="fa-solid fa-upload"></i> Apply on server</button>
+                <button class="btn" id="btnPolicy" title="Fill in a strict provider policy">Insert safety policy</button></div>
+            </div>
+            <details class="mf"><summary>What is <code>bot-latest</code> on the server right now? (operator view)</summary><pre id="modelfile">…</pre></details>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-keyboard"></i> Or change it from any terminal</h2></div>
+          <p class="muted small">Works on the Ollama computer, or remotely through a Cloudflare link. Python only, no packages.</p>
+<pre class="code">cd provider_tools
+python provider.py swap llama3.2:1b     <span class="c"># MODEL layer</span>
+python provider.py quant                <span class="c"># SERVING: q8 build</span>
+python provider.py context 512          <span class="c"># SERVING: context</span>
+python provider.py slow                 <span class="c"># SERVING: hardware</span>
+python provider.py safety               <span class="c"># SAFETY layer</span>
+python provider.py normal               <span class="c"># back to normal</span>
+python provider.py swap gemma3:1b --url https://xxx.trycloudflare.com</pre>
+          <p class="muted small">Windows: double-click <code>provider_tools\change_bot_latest.bat</code> for a menu.</p>
+        </div>
+
+        <div class="card" id="modelsCard" hidden>
+          <div class="card-head"><h2><i class="fa-solid fa-microchip"></i> Models</h2></div>
+          <div class="model-pick">
+            <label><span>bot-latest is normally built from</span><select id="selProd"></select></label>
+            <label><span>one-click model swap moves it to</span><select id="selNew"></select></label>
+            <button class="btn primary" id="btnRoutes"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+          </div>
+          <p class="muted small" id="routesNote"></p>
+          <details class="downloads">
+            <summary><b>Download a small, fast model</b> <span class="muted small">(same as "ollama pull")</span></summary>
+            <div id="suggested"></div>
+            <div class="custom-pull"><input id="pullName" placeholder="any Ollama model, e.g. qwen2.5:3b">
+              <button class="btn small" id="btnPull"><i class="fa-solid fa-download"></i> Download</button></div>
+          </details>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2><i class="fa-solid fa-list"></i> Change log <span class="muted small">operator view - the monitor never reads this</span></h2></div>
+        <div class="table-wrap"><table id="events"></table></div>
+      </div>
+    </section>
+
+    <!-- ===================================================== EVALUATION -->
+    <section class="tab-page" id="tab-evaluation" hidden>
+      <div class="card">
+        <div class="card-head">
+          <h2><i class="fa-solid fa-flask"></i> Randomised blind evaluation</h2>
+          <div class="btn-row">
+            <label class="muted small">Trials <input type="number" id="trials" value="40" min="5" max="200"></label>
+            <button class="btn primary" id="btnEval"><i class="fa-solid fa-play"></i> Run evaluation</button>
+          </div>
+        </div>
+        <p class="muted small">Each trial: a random controlled change (or none) is applied in secret → the monitor checks without
+          being told → its report is scored against the hidden change log. <span id="evalHint"></span></p>
+        <div class="eval-tabs" id="evalTabs"></div>
+        <div id="evalOut"><p class="empty">No evaluation yet.</p></div>
+      </div>
+    </section>
+
+    <!-- ===================================================== PRIVACY -->
+    <section class="tab-page" id="tab-privacy" hidden>
+      <div class="card">
+        <div class="card-head"><h2><i class="fa-solid fa-user-shield"></i> Privacy audit</h2>
+          <button class="btn primary small" id="btnAudit"><i class="fa-solid fa-shield-halved"></i> Run privacy audit</button></div>
+        <p class="muted small">SilentShift stores <b>no user prompts</b>. The audit sends a unique secret through the chatbot path,
+          then scans every file SilentShift has written for it.</p>
+        <div id="auditResult"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2><i class="fa-solid fa-database"></i> Everything SilentShift stores about model calls</h2></div>
+        <p class="muted small"><b>probe</b> = canary from the monitor, <b>live</b> = chatbot message. IN/OUT = tokens read/written,
+          TOK/S = speed, settings hash = fingerprint of the request settings. No text. (Ollama re-uses work on repeated prompts, so IN can be small.)</p>
+        <div class="table-wrap"><table id="metaTable"></table></div>
+      </div>
+    </section>
+
+    <!-- ===================================================== HOW IT WORKS -->
+    <section class="tab-page" id="tab-how" hidden>
+      <div class="card">
+        <h2><i class="fa-solid fa-route"></i> The pipeline</h2>
+        <div class="pipeline">
+          <div class="step"><i class="fa-solid fa-vial"></i><b>15 synthetic canaries</b><span>medical summary, homework, JSON parser, safety, long input, identity…</span></div>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+          <div class="step"><i class="fa-solid fa-shield-halved"></i><b>Same gateway as users</b><span>metadata only - never prompts or answers</span></div>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+          <div class="step"><i class="fa-solid fa-box"></i><b>Provider = black box</b><span>answers, token counts, timing - nothing else</span></div>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+          <div class="step"><i class="fa-solid fa-scale-balanced"></i><b>Noise-aware compare</b><span>cheap sentinel → confirm only if needed</span></div>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+          <div class="step"><i class="fa-solid fa-layer-group"></i><b>Attribute the layer</b><span>model · serving · safety · request config</span></div>
+          <i class="fa-solid fa-chevron-right arrow"></i>
+          <div class="step hl"><i class="fa-solid fa-fingerprint"></i><b>Name the model</b><span>match against the fingerprint library</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><i class="fa-solid fa-trophy"></i> What exists already - and what SilentShift adds</h2>
+        <div class="table-wrap"><table class="cmp">
+          <tr><th>Approach</th><th>Examples</th><th>Detects change</th><th>Which layer</th><th>Names the new model</th><th>User impact</th><th>No prompts stored</th><th>Blind eval built in</th></tr>
+          <tr><td>LLM observability</td><td>Langfuse, Helicone, LangSmith, Phoenix</td><td class="no">logs only</td><td class="no">✗</td><td class="no">✗</td><td class="no">✗</td><td class="no">stores prompts</td><td class="no">✗</td></tr>
+          <tr><td>Drift monitors</td><td>DriftWatch, dedrift, Evidently</td><td class="yes">✓</td><td class="mid">own config only</td><td class="no">✗</td><td class="mid">scores</td><td class="mid">varies</td><td class="no">✗</td></tr>
+          <tr><td>Research auditors</td><td>MMD test (Gao et al.), RUT (ICLR 2026), Cai et al. 2025, IRIS</td><td class="yes">✓ yes/no</td><td class="no">✗</td><td class="mid">vs. one claimed model</td><td class="no">✗</td><td class="yes">✓</td><td class="mid">offline</td></tr>
+          <tr><td>LLM fingerprinting</td><td>LLMmap (Pasquini et al.)</td><td class="no">✗ (not monitoring)</td><td class="no">✗</td><td class="yes">✓</td><td class="no">✗</td><td class="yes">✓</td><td class="no">✗</td></tr>
+          <tr class="us"><td><b>SilentShift</b></td><td>this project</td><td class="yes">✓ noise-aware, 2-stage</td><td class="yes">✓ 4 layers + confidence</td><td class="yes">✓ fingerprint library</td><td class="yes">✓ medical / homework / parser</td><td class="yes">✓ audited</td><td class="yes">✓ randomised, blind</td></tr>
+        </table></div>
+        <p class="muted small">SilentShift is the only one that answers all four questions an engineer asks at 3 a.m.:
+          <b>did it change? where? who is it now? who is hurt?</b> - from the customer side, with evidence kept separate from inference.</p>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2><i class="fa-solid fa-magnifying-glass-chart"></i> Which clue points at which layer</h2>
+          <table class="clues">
+            <tr><th>Clue (observed)</th><th>Points at</th></tr>
+            <tr><td>Our own request-settings hash changed</td><td>request config</td></tr>
+            <tr><td>Same prompts → different token counts by different amounts (new tokenizer)</td><td>model</td></tr>
+            <tr><td>Answers now match <b>another model's</b> fingerprint</td><td>model</td></tr>
+            <tr><td>Answers match <b>another build</b> of the same model</td><td>serving</td></tr>
+            <tr><td>Same tokenizer &amp; answers, speed changed</td><td>serving</td></tr>
+            <tr><td>Long input cut, same tokenizer</td><td>serving</td></tr>
+            <tr><td>Refuses borderline questions, still answers harmless control; constant token offset</td><td>safety</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h2><i class="fa-solid fa-list-check"></i> PS-03 constraints</h2>
+          <ul class="checks">
+            <li><i class="fa-solid fa-check"></i> No provider internals: only answers, token counts and timing</li>
+            <li><i class="fa-solid fa-check"></i> No user prompts stored - checked by the privacy audit</li>
+            <li><i class="fa-solid fa-check"></i> Normal variation: baseline learns the spread; a clue must appear in two rounds</li>
+            <li><i class="fa-solid fa-check"></i> Probe cost: 15 calls when quiet, more only when something looks off - shown on every report</li>
+            <li><i class="fa-solid fa-check"></i> Report separates observed evidence from likely cause, lists alternatives and what it can't prove</li>
+            <li><i class="fa-solid fa-check"></i> Randomised controlled changes: detection, attribution, false alarms, missed, cost - plus identification</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot muted small">SilentShift · PS-03 "The Model Changed Without Changing Its Name"</footer>
+  </main>
+</div>
+<script src="console.js?v=5"></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+# SilentShift with its own Ollama server - everything in containers.
+#
+#   docker compose up --build                 real mode: Ollama + 2 small models + SilentShift
+#   docker compose --profile demo up --build  also starts a demo-mode copy on :8001 (no models needed)
+#   docker compose --profile tunnel up        also shares Ollama via a Cloudflare link (see the logs)
+#
+# Dashboard: http://localhost:8000/monitor.html   Chatbot: http://localhost:8000
+# Already have Ollama on your computer? Delete the ollama/models services and set
+#   SS_OLLAMA_URL=http://host.docker.internal:11434
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
+    volumes: ["ollama:/root/.ollama"]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    # NVIDIA GPU? uncomment:
+    # deploy: { resources: { reservations: { devices: [ { driver: nvidia, count: all, capabilities: [gpu] } ] } } }
+
+  models:          # one-shot: downloads the production model and a different-family swap target
+    image: ollama/ollama:latest
+    depends_on: { ollama: { condition: service_healthy } }
+    environment: { OLLAMA_HOST: "ollama:11434" }
+    entrypoint: ["sh", "-c", "ollama pull qwen2.5:1.5b && ollama pull llama3.2:1b"]
+    restart: "no"
+
+  silentshift:
+    build: .
+    depends_on: { models: { condition: service_completed_successfully } }
+    environment:
+      SS_MODE: real
+      SS_OLLAMA_URL: http://ollama:11434
+      SS_PRODUCTION: ollama:qwen2.5:1.5b
+      SS_MODEL_NEW: ollama:llama3.2:1b
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+    ports: ["8000:8000"]
+    volumes: ["./data:/app/data"]
+    restart: unless-stopped
+
+  silentshift-demo:
+    profiles: ["demo"]
+    build: .
+    environment: { SS_MODE: demo }
+    ports: ["8001:8000"]
+
+  tunnel:
+    profiles: ["tunnel"]
+    image: cloudflare/cloudflared:latest
+    depends_on: [ollama]
+    command: tunnel --no-autoupdate --url http://ollama:11434 --http-host-header localhost:11434
+
+volumes:
+  ollama:

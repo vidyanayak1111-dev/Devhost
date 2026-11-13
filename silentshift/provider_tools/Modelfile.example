@@ -1,0 +1,2 @@
+FROM qwen2.5:1.5b
+SYSTEM """You are a helpful assistant. Keep answers short and clear."""

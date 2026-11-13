@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#151a17">
+
+  <title>Silent Shift - AI Monitor</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css?v=14">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="app-container">
+
+  <!-- ================================= -->
+  <!-- SIDEBAR -->
+  <!-- ================================= -->
+
+  <aside class="sidebar" id="sidebar">
+
+    <!-- BRAND LOGO -->
+
+    <div class="brand">
+
+      <svg class="brand-logo" width="34" height="34" viewBox="0 0 40 40" aria-label="SilentShift logo">
+        <rect width="40" height="40" rx="11" fill="#07845e"/>
+        <polyline points="6,22 12,22 16,12 21,29 25,17 28,22 34,22" fill="none" stroke="#fff"
+                  stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      <span>SilentShift</span>
+
+    </div>
+
+
+    <!-- NEW CHAT BUTTON -->
+
+    <button class="new-chat" id="newChat">
+
+      <i class="fa-solid fa-plus"></i>
+
+      <span>New Chat</span>
+
+    </button>
+
+
+    <!-- CHAT HISTORY -->
+
+    <div class="history-section">
+
+      
+
+
+      <div id="chatHistory"></div>
+
+    </div>
+
+
+    <!-- SIDEBAR BOTTOM -->
+
+    <div class="sidebar-bottom">
+
+      <a class="monitor-link" href="/monitor.html" target="_top">
+
+        <i class="fa-solid fa-wave-square"></i>
+
+        <span>Monitor dashboard</span>
+
+      </a>
+
+      <button id="themeToggle">
+
+        <i class="fa-solid fa-moon"></i>
+
+        <span>Switch theme</span>
+
+      </button>
+
+    </div>
+
+  </aside>
+
+
+
+  <!-- ================================= -->
+  <!-- MAIN CONTENT -->
+  <!-- ================================= -->
+
+  <main class="main-content">
+
+
+    <!-- TOP NAVIGATION -->
+
+    <header class="topbar">
+
+      <button
+        class="menu-btn"
+        id="menuToggle"
+        aria-label="Toggle sidebar"
+      >
+
+        <i class="fa-solid fa-bars"></i>
+
+      </button>
+
+
+      <a class="topbar-brand health-pill" id="healthPill" href="/monitor.html" target="_top" title="Open the monitor dashboard">
+
+        <span class="status-dot" id="healthDot"></span>
+
+        <span id="healthText">bot-latest · checking monitor…</span>
+
+      </a>
+
+    </header>
+
+
+
+    <!-- ================================= -->
+    <!-- CHAT AREA -->
+    <!-- ================================= -->
+
+    <div class="ss-banner" id="ssBanner" hidden>
+      <span id="ssBannerText"></span>
+      <a href="/monitor.html" target="_top">See report</a>
+      <button type="button" id="ssBannerClose" aria-label="Dismiss">×</button>
+    </div>
+
+    <section class="chat-area" id="chatArea">
+
+
+      <!-- WELCOME SCREEN -->
+
+      <div class="welcome-screen" id="welcomeScreen">
+
+
+        <!-- CENTRE LOGO -->
+
+        <div class="welcome-logo">
+
+          <svg
+            viewBox="0 0 24 24"
+            width="30"
+            height="30"
+            fill="none"
+            stroke="white"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+
+            <path d="M12 2L14.5 9.5 22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z"/>
+
+            <path d="M19 2v4M17 4h4"/>
+
+          </svg>
+
+        </div>
+
+
+        <!-- WELCOME TEXT -->
+
+        <span class="welcome-eyebrow">
+
+          YOUR AI MONITOR
+
+        </span>
+
+
+        <h1>
+
+          Where would you like<br>
+
+          to <span>begin?</span>
+
+        </h1>
+
+
+        <p>
+
+          Chat with <b>bot-latest</b>. SilentShift watches the model behind it and tells you if it silently changes.
+
+        </p>
+
+        <div class="suggestions">
+          <button class="suggestion" data-prompt="/status">Is the model behaving normally?</button>
+          <button class="suggestion" data-prompt="Explain what a rainbow is to a 7 year old.">Explain a rainbow to a kid</button>
+          <button class="suggestion" data-prompt="/help">What can you do?</button>
+        </div>
+
+
+      </div>
+
+
+      <!-- CHAT MESSAGES -->
+
+      <div class="messages" id="messages"></div>
+
+
+    </section>
+
+
+
+    <!-- ================================= -->
+    <!-- MESSAGE COMPOSER -->
+    <!-- ================================= -->
+
+    <footer class="composer-area">
+
+
+      <div class="composer" id="composer">
+
+
+        <!-- ATTACHMENT PREVIEW -->
+
+        <div
+          class="attachment-preview"
+          id="attachmentPreview"
+        ></div>
+
+
+        <!-- MESSAGE INPUT -->
+
+        <textarea
+          id="messageInput"
+          placeholder="Message the support bot..."
+          rows="1"
+          aria-label="Message Silent Shift"
+        ></textarea>
+
+
+        <!-- COMPOSER ACTIONS -->
+
+        <div class="composer-actions">
+
+
+          <!-- LEFT BUTTONS -->
+
+          <div class="left-actions">
+
+
+            <!-- ATTACHMENT BUTTON -->
+
+            <button
+              class="composer-btn"
+              id="attachBtn"
+              title="Attach files"
+              type="button"
+            >
+
+              <i class="fa-solid fa-paperclip"></i>
+
+            </button>
+
+
+            <!-- FILE INPUT -->
+
+            <input
+              type="file"
+              id="fileInput"
+              multiple
+              accept="image/*,.pdf,.txt,.doc,.docx,.csv"
+              hidden
+            >
+
+
+            <!-- MICROPHONE BUTTON -->
+
+            <button
+              class="composer-btn mic-btn"
+              id="micBtn"
+              title="Voice input"
+              type="button"
+            >
+
+              <i class="fa-solid fa-microphone"></i>
+
+            </button>
+
+
+            <!-- VOICE STATUS -->
+
+            <span
+              class="voice-status"
+              id="voiceStatus"
+            ></span>
+
+
+          </div>
+
+
+          <!-- SEND BUTTON -->
+
+          <button
+            class="send-btn"
+            id="sendBtn"
+            title="Send message"
+            type="button"
+          >
+
+            <i class="fa-solid fa-arrow-up"></i>
+
+          </button>
+
+
+        </div>
+
+
+      </div>
+
+
+      <!-- DISCLAIMER -->
+
+      <p class="disclaimer">
+
+        <i class="fa-solid fa-shield-halved"></i>
+
+        Silent Shift can make mistakes. Verify important information.
+
+      </p>
+
+
+    </footer>
+
+
+  </main>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+
+<script src="script.js?v=14"></script>
+
+</body>
+
+</html>

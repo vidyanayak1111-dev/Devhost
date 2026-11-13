@@ -1,0 +1,7 @@
+.env
+venv/
+data/
+__pycache__/
+*.pyc
+.git/
+provider_tools/provider_change_log.txt
