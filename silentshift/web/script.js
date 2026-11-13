@@ -1,11 +1,12 @@
-
 // ==========================================
 // FRONTEND JAVASCRIPT
 // ==========================================
 
 // DOM ELEMENTS
-const API_URL ="https://str-cluster-scenic-temperatures.trycloudflare.com/api/chat";
-const API_MODEL = "bot-latest";
+// Same origin as the page: server.py serves both the UI and the API.
+// The server adds our system prompt + request options, so the UI only sends messages.
+const API_URL = "/api/chat";
+const STATUS_URL = "/monitor/status";
 const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 const messages = document.getElementById("messages");
@@ -297,6 +298,102 @@ document.addEventListener("click", () => {
 
 
 // ==========================================
+// MARKDOWN RENDERER (small, safe, no libraries)
+// Turns **bold**, ### headings, lists, tables, `code` and ``` blocks into HTML.
+// All text is HTML-escaped FIRST, so model output can't inject scripts.
+// ==========================================
+
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function inlineMd(s) {
+  return s
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/__([^_]+)__/g, "<strong>$1</strong>")
+    .replace(/(^|[^*])\*([^*\s][^*]*?)\*(?!\*)/g, "$1<em>$2</em>")
+    .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+
+function renderMarkdown(text) {
+  const lines = escapeHtml(text || "").split("\n");
+  const out = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // code block
+    if (line.trim().startsWith("```")) {
+      const code = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith("```")) code.push(lines[i++]);
+      i++;
+      out.push(`<pre><code>${code.join("\n")}</code></pre>`);
+      continue;
+    }
+
+    // table: a header row followed by |---|---|
+    if (line.includes("|") && i + 1 < lines.length && /^\s*\|?\s*:?-{2,}/.test(lines[i + 1])) {
+      const cells = l => l.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map(c => inlineMd(c.trim()));
+      let html = "<table><thead><tr>" + cells(line).map(c => `<th>${c}</th>`).join("") + "</tr></thead><tbody>";
+      i += 2;
+      while (i < lines.length && lines[i].includes("|") && lines[i].trim()) {
+        html += "<tr>" + cells(lines[i]).map(c => `<td>${c}</td>`).join("") + "</tr>";
+        i++;
+      }
+      out.push(`<div class="md-table">${html}</tbody></table></div>`);
+      continue;
+    }
+
+    // headings
+    const h = line.match(/^\s*(#{1,6})\s+(.*)$/);
+    if (h) {
+      const level = Math.min(h[1].length + 2, 6);   // ### -> h5-ish size, keeps bubbles compact
+      out.push(`<h${level}>${inlineMd(h[2])}</h${level}>`);
+      i++;
+      continue;
+    }
+
+    // horizontal rule
+    if (/^\s*([-*_])\1{2,}\s*$/.test(line)) { out.push("<hr>"); i++; continue; }
+
+    // lists (bullets or numbers)
+    if (/^\s*([-*+]|\d+[.)])\s+/.test(line)) {
+      const ordered = /^\s*\d+[.)]/.test(line);
+      const items = [];
+      while (i < lines.length && (/^\s*([-*+]|\d+[.)])\s+/.test(lines[i]) || (/^\s{2,}\S/.test(lines[i]) && items.length))) {
+        if (/^\s*([-*+]|\d+[.)])\s+/.test(lines[i])) {
+          items.push(inlineMd(lines[i].replace(/^\s*([-*+]|\d+[.)])\s+/, "")));
+        } else {
+          items[items.length - 1] += "<br>" + inlineMd(lines[i].trim());   // indented continuation line
+        }
+        i++;
+      }
+      const tag = ordered ? "ol" : "ul";
+      const start = ordered ? ` start="${parseInt(line.trim(), 10) || 1}"` : "";   // keep "2." as 2
+      out.push(`<${tag}${start}>${items.map(x => `<li>${x}</li>`).join("")}</${tag}>`);
+      continue;
+    }
+
+    // blank line
+    if (!line.trim()) { i++; continue; }
+
+    // paragraph: join consecutive plain lines
+    const para = [];
+    while (i < lines.length && lines[i].trim() && !/^\s*(#{1,6}\s|```|([-*+]|\d+[.)])\s)/.test(lines[i]) &&
+           !(lines[i].includes("|") && i + 1 < lines.length && /^\s*\|?\s*:?-{2,}/.test(lines[i + 1]))) {
+      para.push(inlineMd(lines[i]));
+      i++;
+    }
+    out.push(`<p>${para.join("<br>")}</p>`);
+  }
+  return out.join("");
+}
+
+
+// ==========================================
 // DISPLAY MESSAGES
 // ==========================================
 
@@ -320,7 +417,12 @@ function renderMessages() {
     const bubble = document.createElement("div");
 
     bubble.className = "message-bubble";
-    bubble.textContent = msg.text;
+    if (msg.role === "assistant") {
+      bubble.classList.add("md");
+      bubble.innerHTML = renderMarkdown(msg.text);   // escaped first, so it's safe
+    } else {
+      bubble.textContent = msg.text;
+    }
 
     wrapper.appendChild(bubble);
 
@@ -545,16 +647,14 @@ function sendMessage() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: API_MODEL,
-          messages: requestMessages,
-          stream: false
+          messages: requestMessages
         })
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Backend error: ${response.status}`
-        );
+        let detail = "";
+        try { detail = (await response.json()).detail || ""; } catch (e) {}
+        throw new Error(`Backend error ${response.status} ${detail}`);
       }
 
       const data = await response.json();
@@ -575,7 +675,7 @@ function sendMessage() {
 
       chatToUpdate.messages.push({
         role: "assistant",
-        text: "I'm having trouble connecting to the AI backend. Please try again in a moment."
+        text: "I'm having trouble connecting to the AI backend (" + error.message + "). Is `python run.py` running?"
       });
 
     } finally {
@@ -884,3 +984,45 @@ if (conversations.length > 0) {
   startNewChat();
 
 }
+
+
+// ==========================================
+// MODEL HEALTH (from the SilentShift monitor)
+// ==========================================
+
+const healthPill = document.getElementById("healthPill");
+const healthDot = document.getElementById("healthDot");
+const healthText = document.getElementById("healthText");
+
+async function refreshHealth() {
+  try {
+    const r = await fetch(STATUS_URL);
+    const s = await r.json();
+    let cls = "ok", text = "bot-latest · behaving normally";
+    if (!s.baseline) {
+      cls = "idle"; text = "bot-latest · monitor has no baseline yet";
+    } else if (s.job && s.job.state === "running") {
+      cls = "busy"; text = `bot-latest · monitor running ${s.job.kind}…`;
+    } else if (s.latest && s.latest.changed) {
+      cls = "alert";
+      const cause = (s.latest.likely_cause || "unknown").replace("_", " ");
+      text = `bot-latest · behaviour changed (likely ${cause})`;
+    } else if (!s.latest) {
+      cls = "idle"; text = "bot-latest · baseline learned, no check yet";
+    }
+    healthPill.className = "topbar-brand health-pill " + cls;
+    healthText.textContent = text;
+  } catch (e) {
+    healthPill.className = "topbar-brand health-pill alert";
+    healthText.textContent = "monitor offline";
+  }
+}
+refreshHealth();
+setInterval(refreshHealth, 5000);
+
+document.querySelectorAll(".suggestion").forEach(btn => {
+  btn.addEventListener("click", () => {
+    messageInput.value = btn.dataset.prompt;
+    sendMessage();
+  });
+});

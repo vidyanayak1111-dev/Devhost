@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SilentShift · Monitor</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="monitor.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="mon">
+
+  <header class="mon-top">
+    <div class="mon-brand">
+      <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" alt="" class="brand-logo">
+      <div>
+        <b>SilentShift Monitor</b>
+        <small>Detects when the model behind <code>bot-latest</code> changes - and which layer changed</small>
+      </div>
+    </div>
+    <div class="mon-top-actions">
+      <span class="chip" id="modeChip">provider: …</span>
+      <a class="btn ghost" href="/"><i class="fa-solid fa-comments"></i> Chatbot</a>
+      <button class="btn ghost" id="themeBtn" title="Switch theme"><i class="fa-solid fa-moon"></i></button>
+    </div>
+  </header>
+
+  <!-- STATUS -->
+  <section class="card hero" id="hero">
+    <div class="hero-left">
+      <div class="hero-state" id="heroState"><span class="big-dot"></span><span id="heroTitle">Loading…</span></div>
+      <p class="hero-sub" id="heroSub"></p>
+      <div class="hero-meta" id="heroMeta"></div>
+    </div>
+    <div class="hero-right">
+      <div class="btn-row">
+        <button class="btn" id="btnBaseline"><i class="fa-solid fa-ruler"></i> Learn baseline</button>
+        <button class="btn primary" id="btnCheck"><i class="fa-solid fa-magnifying-glass"></i> Run check</button>
+        <button class="btn" id="btnDeep" title="Skip the cheap sentinel stage"><i class="fa-solid fa-microscope"></i> Deep check</button>
+      </div>
+      <label class="watch">
+        <input type="checkbox" id="watchToggle"> Auto-check every
+        <input type="number" id="watchMin" min="1" value="5"> min
+      </label>
+      <div class="progress" id="progress" hidden>
+        <div class="bar"><div id="progressBar"></div></div>
+        <span id="progressText"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="card">
+    <div class="card-head">
+      <h2><i class="fa-solid fa-file-lines"></i> Report <span class="muted" id="reportTime"></span></h2>
+      <span class="muted small" id="reportCost"></span>
+    </div>
+    <div class="report" id="report"><p class="empty">No report yet. Learn a baseline, then run a check.</p></div>
+  </section>
+
+  <div class="grid2">
+    <!-- DEMO -->
+    <section class="card demo">
+      <div class="card-head">
+        <h2><i class="fa-solid fa-user-secret"></i> Provider simulator</h2>
+        <button class="btn small" id="btnReset"><i class="fa-solid fa-rotate-left"></i> Reset all</button>
+      </div>
+      <p class="muted small">Demo-operator panel. Plays the provider (or a teammate) making a <b>silent</b> change.
+        The monitor cannot see this panel or its log - it must work it out from canary answers alone.</p>
+      <div class="active-change">Active change: <b id="activeChange">none</b></div>
+      <div class="changes" id="changes"></div>
+    </section>
+
+    <!-- PRIVACY -->
+    <section class="card">
+      <div class="card-head">
+        <h2><i class="fa-solid fa-user-shield"></i> Privacy</h2>
+        <button class="btn small" id="btnAudit"><i class="fa-solid fa-shield-halved"></i> Run privacy audit</button>
+      </div>
+      <p class="muted small">Every model call is logged as metadata only: model name, a hash of request settings,
+        token counts, speed and finish reason. User prompts and answers are never written to disk.
+        The audit sends a unique secret through the chat path, then scans every stored file for it.</p>
+      <div id="auditResult"></div>
+      <h3>Live traffic since baseline <span class="muted small">(metadata only)</span></h3>
+      <div class="tiles small-tiles" id="liveTiles"></div>
+      <div class="table-wrap"><table id="metaTable"></table></div>
+    </section>
+  </div>
+
+  <!-- EVALUATION -->
+  <section class="card">
+    <div class="card-head">
+      <h2><i class="fa-solid fa-flask"></i> Evaluation <span class="muted small">randomised blind trials</span></h2>
+      <div class="btn-row">
+        <label class="muted small">Trials <input type="number" id="trials" value="40" min="10" max="200"></label>
+        <button class="btn primary" id="btnEval"><i class="fa-solid fa-play"></i> Run evaluation</button>
+      </div>
+    </div>
+    <p class="muted small">Re-learns the baseline, then for each trial applies a random controlled change (or none),
+      lets the monitor check blind, and scores its report against the hidden change log.</p>
+    <div id="evalOut"><p class="empty">No evaluation yet.</p></div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="card">
+    <div class="card-head"><h2><i class="fa-solid fa-clock-rotate-left"></i> Check history</h2></div>
+    <div class="table-wrap"><table id="history"></table></div>
+  </section>
+
+  <footer class="mon-foot muted small">SilentShift · PS-03 "The Model Changed Without Changing Its Name"</footer>
+</div>
+<script src="monitor.js"></script>
+</body>
+</html>

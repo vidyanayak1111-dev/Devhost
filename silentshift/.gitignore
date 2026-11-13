@@ -1,0 +1,7 @@
+@"
+.env
+__pycache__/
+*.pyc
+data/
+venv/
+"@ | Set-Content -Encoding ascii silentshift\.gitignore

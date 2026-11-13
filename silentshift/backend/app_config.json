@@ -2,7 +2,7 @@
   "model": "bot-latest",
   "system": "You are a helpful assistant.",
   "options": {
-    "temperature": 0,
+    "temperature": 0.9,
     "seed": 42,
     "top_p": 0.9,
     "num_predict": 200

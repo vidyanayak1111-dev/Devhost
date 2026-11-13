@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -75,6 +74,14 @@
 
     <div class="sidebar-bottom">
 
+      <a class="monitor-link" href="/monitor.html">
+
+        <i class="fa-solid fa-wave-square"></i>
+
+        <span>Monitor dashboard</span>
+
+      </a>
+
       <button id="themeToggle">
 
         <i class="fa-solid fa-moon"></i>
@@ -111,13 +118,13 @@
       </button>
 
 
-      <div class="topbar-brand">
+      <a class="topbar-brand health-pill" id="healthPill" href="/monitor.html" title="Open the monitor dashboard">
 
-        <span class="status-dot"></span>
+        <span class="status-dot" id="healthDot"></span>
 
-        Silent Shift AI
+        <span id="healthText">bot-latest · checking monitor…</span>
 
-      </div>
+      </a>
 
     </header>
 
@@ -179,9 +186,15 @@
 
         <p>
 
-          Monitor AI behaviour, detect changes and explore insights.
+          Chat with <b>bot-latest</b>. SilentShift watches the model behind it and tells you if it silently changes.
 
         </p>
+
+        <div class="suggestions">
+          <button class="suggestion" data-prompt="/status">Is the model behaving normally?</button>
+          <button class="suggestion" data-prompt="Explain what a rainbow is to a 7 year old.">Explain a rainbow to a kid</button>
+          <button class="suggestion" data-prompt="/help">What can you do?</button>
+        </div>
 
 
       </div>
