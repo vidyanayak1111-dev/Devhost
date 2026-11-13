@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SilentShift — Customer-Side Drift Monitor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS built into the page so the dashboard works offline -->
+  <style>*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.sticky{position:sticky}.top-0{top:0}.z-40{z-index:40}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.flex{display:flex}.table{display:table}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-16{height:4rem}.h-2{height:.5rem}.h-4{height:1rem}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-2{width:.5rem}.w-32{width:8rem}.w-4{width:1rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.list-disc{list-style-type:disc}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.25rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem*var(--tw-space-y-reverse))}.space-y-2>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.5rem*var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.space-y-6>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem*var(--tw-space-y-reverse))}.overflow-x-auto{overflow-x:auto}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-amber-500\/30{border-color:rgba(245,158,11,.3)}.border-emerald-500\/30{border-color:rgba(16,185,129,.3)}.border-rose-800{--tw-border-opacity:1;border-color:rgb(159 18 57/var(--tw-border-opacity,1))}.border-slate-500\/30{border-color:rgba(100,116,139,.3)}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85/var(--tw-border-opacity,1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59/var(--tw-border-opacity,1))}.bg-amber-500\/15{background-color:rgba(245,158,11,.15)}.bg-blue-600{--tw-bg-opacity:1;background-color:rgb(37 99 235/var(--tw-bg-opacity,1))}.bg-emerald-400{--tw-bg-opacity:1;background-color:rgb(52 211 153/var(--tw-bg-opacity,1))}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129/var(--tw-bg-opacity,1))}.bg-emerald-500\/15{background-color:rgba(16,185,129,.15)}.bg-emerald-600{--tw-bg-opacity:1;background-color:rgb(5 150 105/var(--tw-bg-opacity,1))}.bg-indigo-600{--tw-bg-opacity:1;background-color:rgb(79 70 229/var(--tw-bg-opacity,1))}.bg-rose-500{--tw-bg-opacity:1;background-color:rgb(244 63 94/var(--tw-bg-opacity,1))}.bg-rose-950\/50{background-color:rgba(76,5,25,.5)}.bg-slate-500{--tw-bg-opacity:1;background-color:rgb(100 116 139/var(--tw-bg-opacity,1))}.bg-slate-500\/15{background-color:rgba(100,116,139,.15)}.bg-slate-600{--tw-bg-opacity:1;background-color:rgb(71 85 105/var(--tw-bg-opacity,1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.bg-slate-800\/60{background-color:rgba(30,41,59,.6)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42/var(--tw-bg-opacity,1))}.bg-slate-900\/70{background-color:rgba(15,23,42,.7)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23/var(--tw-bg-opacity,1))}.bg-gradient-to-tr{background-image:linear-gradient(to top right,var(--tw-gradient-stops))}.from-blue-500{--tw-gradient-from:#3b82f6 var(--tw-gradient-from-position);--tw-gradient-to:rgba(59,130,246,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.via-indigo-500{--tw-gradient-to:rgba(99,102,241,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),#6366f1 var(--tw-gradient-via-position),var(--tw-gradient-to)}.to-cyan-400{--tw-gradient-to:#22d3ee var(--tw-gradient-to-position)}.p-4{padding:1rem}.p-5{padding:1.25rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-16{padding-bottom:4rem}.pl-5{padding-left:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-normal{font-weight:400}.tracking-tight{letter-spacing:-.025em}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77/var(--tw-text-opacity,1))}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250/var(--tw-text-opacity,1))}.text-cyan-300{--tw-text-opacity:1;color:rgb(103 232 249/var(--tw-text-opacity,1))}.text-cyan-400{--tw-text-opacity:1;color:rgb(34 211 238/var(--tw-text-opacity,1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183/var(--tw-text-opacity,1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153/var(--tw-text-opacity,1))}.text-rose-200{--tw-text-opacity:1;color:rgb(254 205 211/var(--tw-text-opacity,1))}.text-rose-300{--tw-text-opacity:1;color:rgb(253 164 175/var(--tw-text-opacity,1))}.text-rose-400{--tw-text-opacity:1;color:rgb(251 113 133/var(--tw-text-opacity,1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249/var(--tw-text-opacity,1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240/var(--tw-text-opacity,1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.hover\:bg-blue-500:hover{--tw-bg-opacity:1;background-color:rgb(59 130 246/var(--tw-bg-opacity,1))}.hover\:bg-emerald-500:hover{--tw-bg-opacity:1;background-color:rgb(16 185 129/var(--tw-bg-opacity,1))}.hover\:bg-indigo-500:hover{--tw-bg-opacity:1;background-color:rgb(99 102 241/var(--tw-bg-opacity,1))}@media (min-width:768px){.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (min-width:1024px){.lg\:col-span-2{grid-column:span 2/span 2}.lg\:col-span-3{grid-column:span 3/span 3}.lg\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.lg\:grid-cols-5{grid-template-columns:repeat(5,minmax(0,1fr))}}</style>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .spin { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-16">
+
+<header class="border-b border-slate-800 bg-slate-900/70 backdrop-blur sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 via-indigo-500 to-cyan-400 flex items-center justify-center font-extrabold">S</div>
+      <div>
+        <h1 class="font-bold tracking-tight">SilentShift</h1>
+        <p class="text-xs text-slate-400">Detects when the model behind <span class="mono text-cyan-300">bot-latest</span> changes — and which layer changed</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 bg-slate-800/60 border border-slate-700 px-3 py-1.5 rounded-lg text-xs">
+      <span id="dot" class="w-2 h-2 rounded-full bg-slate-500"></span>
+      <span id="status" class="mono text-slate-300">connecting…</span>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-8 space-y-6">
+
+  <!-- Controls -->
+  <section class="grid md:grid-cols-2 gap-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+      <div class="text-xs mono text-emerald-400 mb-1">STEP 1 · LEARN NORMAL</div>
+      <h2 class="font-bold mb-1">Baseline (change nothing while this runs)</h2>
+      <p class="text-xs text-slate-400 mb-4">Runs the canary fingerprints and scores the evaluation set on the current endpoint.</p>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="agentBaseline()" class="btn bg-emerald-600 hover:bg-emerald-500">Fingerprint baseline</button>
+        <button onclick="runEval('baseline')" class="btn bg-emerald-600 hover:bg-emerald-500">Quality baseline</button>
+      </div>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+      <div class="text-xs mono text-blue-400 mb-1">STEP 2 · CHECK NOW</div>
+      <h2 class="font-bold mb-1">Measure again and diagnose</h2>
+      <p class="text-xs text-slate-400 mb-4">Scores the same evaluation set again, compares with the baseline and checks fingerprints.</p>
+      <div class="flex flex-wrap items-center gap-2">
+        <input id="label" value="current" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs mono w-32">
+        <button onclick="runEval(document.getElementById('label').value)" class="btn bg-blue-600 hover:bg-blue-500">Quality check</button>
+        <button onclick="runDiagnose()" class="btn bg-indigo-600 hover:bg-indigo-500">Diagnose (quality + fingerprints)</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="job" class="hidden bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm flex items-center gap-3">
+    <svg class="spin w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40 60"/></svg>
+    <span id="jobtext"></span>
+  </div>
+  <div id="error" class="hidden bg-rose-950/50 border border-rose-800 text-rose-200 rounded-xl px-4 py-3 text-sm"></div>
+
+  <!-- Summary tiles -->
+  <section id="tiles" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></section>
+
+  <!-- Explanations + evidence -->
+  <section class="grid lg:grid-cols-5 gap-4">
+    <div class="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-2xl p-5">
+      <h3 class="font-bold mb-1">Likely cause</h3>
+      <p class="text-xs text-slate-400 mb-4">Inference from the evidence — consistent with, not proof of.</p>
+      <div id="explanations" class="space-y-3 text-sm text-slate-400">Run a diagnosis to see results.</div>
+    </div>
+    <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-5">
+      <h3 class="font-bold mb-1">Observed evidence</h3>
+      <p class="text-xs text-slate-400 mb-4">Measured facts only.</p>
+      <div id="evidence" class="text-sm text-slate-400">—</div>
+    </div>
+  </section>
+
+  <section class="grid lg:grid-cols-2 gap-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+      <h3 class="font-bold mb-4">Change by category</h3>
+      <div id="categories" class="space-y-2 text-sm text-slate-400">—</div>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+      <h3 class="font-bold mb-4">Canary fingerprint check</h3>
+      <div id="fingerprint" class="text-sm text-slate-400">—</div>
+    </div>
+  </section>
+
+  <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+    <h3 class="font-bold mb-4">Questions that newly failed <span class="text-xs text-slate-400 font-normal">(judge LLM, graded by meaning)</span></h3>
+    <div id="failed" class="text-sm text-slate-400 overflow-x-auto">—</div>
+  </section>
+
+  <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+    <h3 class="font-bold mb-3">Uncertainty</h3>
+    <ul id="uncertainty" class="list-disc pl-5 text-sm text-slate-400 space-y-1"><li>—</li></ul>
+  </section>
+
+  <section class="grid lg:grid-cols-2 gap-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+      <h3 class="font-bold mb-4">Evaluation runs</h3>
+      <div id="runs" class="text-sm text-slate-400 overflow-x-auto">—</div>
+    </div>
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+      <h3 class="font-bold mb-4">Evaluation set</h3>
+      <div id="evalset" class="text-sm text-slate-400">—</div>
+    </div>
+  </section>
+
+  <p class="text-center text-xs text-slate-500">Every number on this page comes from a real run against the endpoint. No real user prompts are stored.</p>
+</main>
+
+<style>.btn{color:#fff;font-size:12px;font-weight:700;padding:.55rem 1rem;border-radius:.75rem;transition:.15s}</style>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pct = x => (x * 100).toFixed(0) + "%";
+let busy = false;
+
+async function api(path, body) {
+  const r = await fetch(path, body ? {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)} : {});
+  if (!r.ok) throw new Error(`${path}: ${r.status} ${await r.text()}`);
+  return r.json();
+}
+
+async function waitJob(text, start) {
+  if (busy) return showError("Another task is still running. Please wait.");
+  busy = true; $("error").classList.add("hidden");
+  $("job").classList.remove("hidden"); $("job").style.display = "flex";
+  const t0 = Date.now();
+  try {
+    const {job_id} = await start();
+    while (true) {
+      $("jobtext").textContent = `${text} — ${Math.round((Date.now() - t0) / 1000)} s (real models can take several minutes)`;
+      const j = await api(`/jobs/${job_id}`);
+      if (j.status === "done") return j.result;
+      if (j.status === "error") throw new Error(j.error);
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  } catch (e) { showError(e.message); }
+  finally { busy = false; $("job").style.display = "none"; loadRuns(); }
+}
+
+function showError(m) { $("error").textContent = m; $("error").classList.remove("hidden"); }
+
+async function agentBaseline() {
+  const r = await waitJob("Learning normal fingerprints", () => api("/agent/baseline", {}));
+  if (r) $("fingerprint").innerHTML = `<span class="text-emerald-400">Fingerprint baseline saved.</span>`;
+}
+async function runEval(label) {
+  const s = await waitJob(`Scoring evaluation set as “${label}”`, () => api("/eval/run", {label}));
+  if (s) $("jobtext").textContent = "";
+}
+async function runDiagnose() {
+  const current = $("label").value;
+  const r = await waitJob("Diagnosing (quality comparison + canary fingerprints)",
+                          () => api("/diagnose", {baseline: "baseline", current, fingerprint: true}));
+  if (r) render(r);
+}
+
+function tile(title, value, sub, color) {
+  return `<div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+    <div class="text-xs text-slate-400">${title}</div>
+    <div class="text-3xl font-extrabold mt-1 ${color}">${value}</div>
+    <div class="text-xs text-slate-500 mt-1 mono">${sub}</div></div>`;
+}
+
+function render(r) {
+  const c = r.comparison;
+  const dropColor = c.delta_points < 0 ? "text-rose-400" : c.delta_points > 0 ? "text-emerald-400" : "text-slate-200";
+  const sig = c.verdict.startsWith("SIGNIFICANT");
+  $("tiles").innerHTML =
+    tile("Baseline pass rate", pct(c.baseline_pass_rate), esc(c.baseline_model), "text-slate-100") +
+    tile("Current pass rate", pct(c.current_pass_rate), esc(c.current_model), "text-slate-100") +
+    tile("Change", (c.delta_points > 0 ? "+" : "") + c.delta_points + " pts",
+         `${c.pass_to_fail.length} pass→fail · ${c.fail_to_pass.length} fail→pass`, dropColor) +
+    tile("Verdict", sig ? "Significant" : (c.verdict.startsWith("NO") ? "No change" : "Unclear"),
+         `McNemar p = ${c.p_value}`, sig ? "text-amber-300" : "text-slate-300");
+
+  const badge = {high: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+                 medium: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+                 low: "bg-slate-500/15 text-slate-300 border-slate-500/30"};
+  $("explanations").innerHTML = r.explanations.length ? r.explanations.map((e, i) => `
+    <div class="border border-slate-800 rounded-xl p-4 ${i === 0 ? "bg-slate-950" : ""}">
+      <div class="flex items-center justify-between">
+        <div class="font-bold text-slate-100">${i + 1}. ${esc(e.name)}</div>
+        <span class="text-xs mono px-2 py-0.5 rounded border ${badge[e.confidence]}">${e.confidence} · ${pct(e.share)}</span>
+      </div>
+      <ul class="list-disc pl-5 mt-2 text-slate-300 space-y-1">${e.reasons.map(x => `<li>${esc(x)}</li>`).join("")}</ul>
+      <div class="text-xs text-slate-500 mt-2">How to confirm: ${esc(e.how_to_confirm)}</div>
+    </div>`).join("") : `<div class="text-emerald-400">No layer implicated: measurements are within normal variation.</div>`;
+
+  const row = (k, v) => `<div class="flex justify-between py-1.5 border-b border-slate-800"><span>${k}</span><span class="mono text-slate-200">${v}</span></div>`;
+  $("evidence").innerHTML =
+    row("Refusal rate", `${pct(c.refusal_rate[0])} → ${pct(c.refusal_rate[1])}`) +
+    row("Answers cut off", `${pct(c.truncated_rate[0])} → ${pct(c.truncated_rate[1])}`) +
+    row("Speed change", c.speed_change == null ? "n/a" : (c.speed_change > 0 ? "+" : "") + pct(c.speed_change)) +
+    row("Different prompt token counts", c.prompt_token_changes + (c.constant_token_offset ? " (same offset)" : "")) +
+    row("Answers that changed", `${c.answers_changed}`) +
+    row("Our settings changed", c.settings_changed ? "yes" : "no");
+
+  const cats = Object.entries(c.category_deltas).sort((a, b) => a[1] - b[1]);
+  $("categories").innerHTML = cats.map(([k, v]) => {
+    const w = Math.min(100, Math.abs(v) * 100);
+    const col = v < 0 ? "bg-rose-500" : v > 0 ? "bg-emerald-500" : "bg-slate-600";
+    return `<div><div class="flex justify-between text-xs"><span>${esc(k)}</span><span class="mono">${(v * 100).toFixed(0)} pts</span></div>
+      <div class="h-2 bg-slate-800 rounded mt-1"><div class="h-2 rounded ${col}" style="width:${Math.max(w, 1)}%"></div></div></div>`;
+  }).join("");
+
+  const fp = r.fingerprint;
+  $("fingerprint").innerHTML = !fp ? "—" : (fp.changed
+    ? `<div class="text-amber-300 font-bold mb-2">Change detected → ${esc(fp.likely_cause)} (${pct(fp.confidence)})</div>
+       <ul class="list-disc pl-5 space-y-1 text-slate-300">${fp.what_i_saw.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`
+    : `<div class="text-emerald-400 font-bold">No fingerprint change detected.</div>`) +
+    (fp ? `<div class="text-xs mono text-slate-500 mt-3">Probe cost: ${fp.probe_cost.calls} calls · ${fp.probe_cost.prompt_tokens + fp.probe_cost.output_tokens} tokens · ${fp.probe_cost.seconds} s</div>` : "");
+
+  $("failed").innerHTML = c.failed_details.length ? `<table class="w-full text-left text-xs">
+    <tr class="text-slate-500"><th class="py-2">Question</th><th>Category</th><th>Missing facts</th><th>Judge's reason</th></tr>
+    ${c.failed_details.map(f => `<tr class="border-t border-slate-800 text-slate-300"><td class="py-2 mono">${esc(f.id)}</td><td>${esc(f.category)}</td>
+      <td class="text-rose-300">${esc((f.missing || []).join(", ") || "—")}</td><td>${esc(f.reason)}</td></tr>`).join("")}</table>`
+    : "No question changed from pass to fail.";
+
+  $("uncertainty").innerHTML = r.uncertainty.map(u => `<li>${esc(u)}</li>`).join("");
+}
+
+async function loadRuns() {
+  try {
+    const runs = await api("/runs");
+    $("runs").innerHTML = runs.length ? `<table class="w-full text-left text-xs"><tr class="text-slate-500"><th class="py-2">Label</th><th>Time</th><th>Pass rate</th><th>Judge</th></tr>
+      ${runs.map(r => `<tr class="border-t border-slate-800 text-slate-300"><td class="py-2 mono">${esc(r.label)}</td><td>${esc(r.time)}</td><td>${pct(r.pass_rate)} of ${r.n}</td><td class="mono">${esc(r.judge)}</td></tr>`).join("")}</table>`
+      : "No runs yet. Start with Step 1.";
+  } catch (e) {}
+}
+
+async function init() {
+  try {
+    const h = await api("/health");
+    $("dot").className = "w-2 h-2 rounded-full bg-emerald-400";
+    $("status").textContent = `connected · judge ${h.judge}`;
+  } catch (e) { $("status").textContent = "API not reachable"; }
+  try {
+    const s = await api("/eval-set");
+    $("evalset").innerHTML = `<div class="text-2xl font-extrabold text-slate-100">${s.total} questions</div>
+      <div class="mt-3 grid grid-cols-2 gap-2">${Object.entries(s.categories).map(([k, v]) =>
+        `<div class="flex justify-between bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs"><span>${esc(k)}</span><span class="mono">${v}</span></div>`).join("")}</div>`;
+  } catch (e) {}
+  loadRuns();
+}
+init();
+</script>
+</body>
+</html>

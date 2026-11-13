@@ -4,7 +4,7 @@
 // ==========================================
 
 // DOM ELEMENTS
-const API_URL ="https://str-cluster-scenic-temperatures.trycloudflare.com/api/chat";
+const API_URL ="https://designed-dee-newspaper-utilize.trycloudflare.com/api/chat";
 const API_MODEL = "bot-latest";
 const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");

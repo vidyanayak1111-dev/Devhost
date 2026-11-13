@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+httpx
+pydantic
+# optional: only needed for the Gemini provider
+# google-genai
